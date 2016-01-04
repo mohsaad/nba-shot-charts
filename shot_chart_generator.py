@@ -12,6 +12,8 @@ import pandas as pd
 import seaborn as sns
 import goldsberry
 from matplotlib.patches import Circle, Rectangle, Arc
+import urllib2
+from matplotlib.offsetbox import OffsetImage
 
 # drawing the court for our shot chart
 def draw_court(ax = None, color = 'black', lw = 2, outer_lines = False):
@@ -105,14 +107,94 @@ shot_df = pd.DataFrame(shots, columns = headers)
 
 ''' Putting the shot chart data together '''
 
+# # create a joint plot
+# joint_shot_chart = sns.jointplot(shot_df.LOC_X, shot_df.LOC_Y, stat_func = None, kind = 'scatter', space = 0, alpha = 0.5)
+# joint_shot_chart.fig.set_size_inches(12,11)
+# ax = joint_shot_chart.ax_joint
+# draw_court(ax)
+
+''' Joint Plot 2 '''
+'''
+# create our jointplot
+
+# get our colormap for the main kde plot
+# Note we can extract a color from cmap to use for 
+# the plots that lie on the side and top axes
+cmap=plt.cm.YlOrRd_r 
+
+# n_levels sets the number of contour lines for the main kde plot
+joint_shot_chart = sns.jointplot(shot_df.LOC_X, shot_df.LOC_Y, stat_func=None,
+                                 kind='kde', space=0, color=cmap(0.1),
+                                 cmap=cmap, n_levels=50)
+
+joint_shot_chart.fig.set_size_inches(12,11)
+
+# A joint plot has 3 Axes, the first one called ax_joint 
+# is the one we want to draw our court onto and adjust some other settings
+ax = joint_shot_chart.ax_joint
+draw_court(ax)
+
+# Adjust the axis limits and orientation of the plot in order
+# to plot half court, with the hoop by the top of the plot
+ax.set_xlim(-250,250)
+ax.set_ylim(422.5, -47.5)
+
+# Get rid of axis labels and tick marks
+ax.set_xlabel('')
+ax.set_ylabel('')
+ax.tick_params(labelbottom='off', labelleft='off')
+'''
+
+'''
+Joint Plot Style 3
+'''
+'''
+# create our jointplot
+
+cmap=plt.cm.gist_heat_r
+joint_shot_chart = sns.jointplot(shot_df.LOC_X, shot_df.LOC_Y, stat_func=None,
+                                 kind='hex', space=0, color=cmap(.2), cmap=cmap)
+
+joint_shot_chart.fig.set_size_inches(12,11)
+
+# A joint plot has 3 Axes, the first one called ax_joint 
+# is the one we want to draw our court onto 
+ax = joint_shot_chart.ax_joint
+draw_court(ax)
+
+# Adjust the axis limits and orientation of the plot in order
+# to plot half court, with the hoop by the top of the plot
+ax.set_xlim(-250,250)
+ax.set_ylim(422.5, -47.5)
+'''
+
+
+# create a normal shot chart
 sns.set_style("white")
 sns.set_color_codes()
 plt.figure(figsize = (12,11))
-draw_court()
+ax = draw_court()
 plt.scatter(shot_df.LOC_X, shot_df.LOC_Y)
+
+
+
+''' 
+DO NOT MESS WITH THESE PARAMETERS (they're standard among all plots)
+'''
 
 plt.xlim(-250, 250)
 plt.ylim(422.5, -47.5)
 plt.tick_params(labelbottom = False, labelleft = False)
+
+ax.set_title('James Harden FGA \n2014-15 Regular Season')
+ax.text(-250,445, 'Data Source: stats.nba.com \nAuthor: Mohammad Saad (mohsaad.com)')
+
+''' Draw Picture of Player '''
+pic = urllib2.urlopen("http://stats.nba.com/media/players/230x185/201935.png","201935.png")
+player_pic = plt.imread(pic)
+img = OffsetImage(player_pic, zoom = 0.6)
+img.set_offset((725,90))
+ax.add_artist(img)
+
 plt.show()
 
