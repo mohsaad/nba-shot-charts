@@ -198,4 +198,3 @@ ax.add_artist(img)
 
 plt.show()
 
-#test
