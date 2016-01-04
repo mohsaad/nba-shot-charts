@@ -193,7 +193,7 @@ ax.set_ylim(422.5, -47.5)
 # create a normal shot chart
 sns.set_style("white")
 sns.set_color_codes()
-plt.figure(figsize = (12,11))
+fig = plt.figure(figsize = (12,11))
 ax = draw_court()
 plt.scatter(shot_df.LOC_X, shot_df.LOC_Y)
 
@@ -207,15 +207,20 @@ plt.xlim(-250, 250)
 plt.ylim(422.5, -47.5)
 plt.tick_params(labelbottom = False, labelleft = False)
 
-ax.set_title('FGA \n2014-15 Regular Season')
+ax.set_title('{0} {1} FGA \n2014-15 Regular Season'.format(args.player_first, args.player_last))
 ax.text(-250,445, 'Data Source: stats.nba.com \nAuthor: Mohammad Saad (mohsaad.com)')
 
 ''' Draw Picture of Player '''
 pic = urllib2.urlopen("http://stats.nba.com/media/players/230x185/{0}.png".format(str(player_id)),"{0}.png".format(str(player_id)))
 player_pic = plt.imread(pic)
 img = OffsetImage(player_pic, zoom = 0.6)
-img.set_offset((725,90))
+img.set_offset((900,110))
 ax.add_artist(img)
 
+# show plot
 # plt.show()
 
+
+
+# save the figure
+fig.savefig("{0}_{1}_shot_chart_2014_2015.png".format(args.player_first, args.player_last))
