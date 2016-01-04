@@ -89,10 +89,14 @@ def draw_court(ax = None, color = 'black', lw = 2, outer_lines = False):
 parser = argparse.ArgumentParser()
 parser.add_argument("player_first", help = "First name of player to make shot chart for")
 parser.add_argument("player_last", help  = "Last name of player to make shot chart for")
+parser.add_argument('-s', '--season', help = "Season to go by (in the form 2014-15)")
 args = parser.parse_args()
 
 player = args.player_first.lower() + "_" + args.player_last.lower()
 
+year = args.season
+if year is None:
+	year = "2014-15"
 
 # load player database
 player_dict = pickle.load(open('player_dict.txt', 'rb'))
@@ -104,21 +108,21 @@ else:
 	player_id = player_dict[player]
 
 shot_chart_url = 'http://stats.nba.com/stats/shotchartdetail?CFID=33&CFPAR'\
-				'AMS=2014-15&ContextFilter=&ContextMeasure=FGA&DateFrom=&D'\
+				'AMS={1}&ContextFilter=&ContextMeasure=FGA&DateFrom=&D'\
 				'ateTo=&GameID=&GameSegment=&LastNGames=0&LeagueID=00&Loca'\
 				'tion=&MeasureType=Base&Month=0&OpponentTeamID=0&Outcome=&'\
 				'PaceAdjust=N&PerMode=PerGame&Period=0&PlayerID={0}&Plu'\
-				'sMinus=N&Position=&Rank=N&RookieYear=&Season=2014-15&Seas'\
+				'sMinus=N&Position=&Rank=N&RookieYear=&Season={1}&Seas'\
 				'onSegment=&SeasonType=Regular+Season&TeamID=0&VsConferenc'\
 				'e=&VsDivision=&mode=Advanced&showDetails=0&showShots=1&sh'\
-				'owZones=0'.format(str(player_id))
+				'owZones=0'.format(str(player_id),year)
 
 # get webpage containing data
 response = requests.get(shot_chart_url)
 
 # grab headers to be used as column headers for dataframe
 headers = response.json()['resultSets'][0]['headers']
-print response.json()
+# print response.json()
 
 # get shot chart data
 shots = response.json()['resultSets'][0]['rowSet']
@@ -207,7 +211,7 @@ plt.xlim(-250, 250)
 plt.ylim(422.5, -47.5)
 plt.tick_params(labelbottom = False, labelleft = False)
 
-ax.set_title('{0} {1} FGA \n2014-15 Regular Season'.format(args.player_first, args.player_last))
+ax.set_title('{0} {1} FGA \n{2} Regular Season'.format(args.player_first, args.player_last, year))
 ax.text(-250,445, 'Data Source: stats.nba.com \nAuthor: Mohammad Saad (mohsaad.com)')
 
 ''' Draw Picture of Player '''
@@ -223,4 +227,4 @@ ax.add_artist(img)
 
 
 # save the figure
-fig.savefig("{0}_{1}_shot_chart_2014_2015.png".format(args.player_first, args.player_last))
+fig.savefig("{0}_{1}_shot_chart_{2}.png".format(args.player_first, args.player_last, year))
