@@ -11,6 +11,10 @@
 
 To use, run
 
-`python shot_chart_generator.py [player name]`
+`python shot_chart_generator.py [player name] [season]`
 
-The player name has to be the first name and last name seperated by a space.
+Example: `python shot_chart_generator.py Stephen Curry 2013-14`
+
+The player name has to be the first name and last name seperated by a space, and the season has to be in the form:
+
+`first year [dash] last two digits of second year`
