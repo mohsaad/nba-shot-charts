@@ -10,5 +10,7 @@
 ## Usage 
 
 To use, run
+
 `python shot_chart_generator.py [player name]`
+
 The player name has to be the first name and last name seperated by a space.
